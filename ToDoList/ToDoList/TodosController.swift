@@ -14,12 +14,12 @@ import SwiftyJSON
 class TodosController: UITableViewController, MyCellTableViewControllerDelegate {
 	
 	func cellButtonTapped(cell: MyCell) {
-//		let section = tableView.indexPath(for: cell)!.section
 	
 		guard let section = tableView.indexPath(for: cell)?.section else { return }
 		guard let row = tableView.indexPath(for: cell)?.row else { return  }
 		guard let id  = data![section].todos![row].id else { return }
 		Net.updateData(param: ["id": id])
+		
 	}
 	
 	
