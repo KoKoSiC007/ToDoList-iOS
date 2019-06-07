@@ -17,6 +17,7 @@
 		C50D747122A974F00041B844 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50D747022A974F00041B844 /* Category.swift */; };
 		C50D747322A980E40041B844 /* AddTodoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50D747222A980E40041B844 /* AddTodoController.swift */; };
 		C50D747522A9AA6B0041B844 /* Net.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50D747422A9AA6A0041B844 /* Net.swift */; };
+		C50D747722A9C33F0041B844 /* MyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50D747622A9C33F0041B844 /* MyCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,6 +48,7 @@
 		C50D747022A974F00041B844 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		C50D747222A980E40041B844 /* AddTodoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoController.swift; sourceTree = "<group>"; };
 		C50D747422A9AA6A0041B844 /* Net.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Net.swift; sourceTree = "<group>"; };
+		C50D747622A9C33F0041B844 /* MyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				C50D747022A974F00041B844 /* Category.swift */,
 				C50D747222A980E40041B844 /* AddTodoController.swift */,
 				C50D747422A9AA6A0041B844 /* Net.swift */,
+				C50D747622A9C33F0041B844 /* MyCell.swift */,
 			);
 			path = ToDoList;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 				C50D747522A9AA6B0041B844 /* Net.swift in Sources */,
 				C50D746F22A973860041B844 /* Todo.swift in Sources */,
 				C50D747322A980E40041B844 /* AddTodoController.swift in Sources */,
+				C50D747722A9C33F0041B844 /* MyCell.swift in Sources */,
 				C50D73C922A95E0C0041B844 /* TodosController.swift in Sources */,
 				C50D747122A974F00041B844 /* Category.swift in Sources */,
 			);

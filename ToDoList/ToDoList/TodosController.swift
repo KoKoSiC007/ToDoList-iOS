@@ -8,11 +8,24 @@
 
 import UIKit
 import M13Checkbox
+import SwiftyJSON
 
 
-class TodosController: UITableViewController {
+class TodosController: UITableViewController, MyCellTableViewControllerDelegate {
+	
+	func cellButtonTapped(cell: MyCell) {
+//		let section = tableView.indexPath(for: cell)!.section
+	
+		guard let section = tableView.indexPath(for: cell)?.section else { return }
+		guard let row = tableView.indexPath(for: cell)?.row else { return  }
+		guard let id  = data![section].todos![row].id else { return }
+		Net.updateData(param: ["id": id])
+	}
 	
 	
+	
+	
+	var data: [Category]?
 	
 	@IBAction func create(_ sender: UIBarButtonItem) {
 		performSegue(withIdentifier: "add", sender: self)
@@ -26,100 +39,72 @@ class TodosController: UITableViewController {
 		}
 	}
 	
-	
-	
-	var data = [Category(id: 1, title: "Home", todos: [Todo(id: 1, text: "Попить чаю",status: true, projectId: 1), Todo(id: 3, text: "Помыть посуду",status: false, projectId: 1)]),Category(id: 2, title: "Работа", todos: [Todo(id: 2, text: "Поработать",status: false, projectId: 2)])]
-	
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
-    }
-
-    // MARK: - Table view data source
-
-	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return 40
-	}
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return data.count
+		self.tableView.delegate = self
+		self.tableView.dataSource = self
+		Net.loadData(callback: parsing(_:))
     }
 	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		// #warning Incomplete implementation, return the number of rows
-		return data[section].todos!.count
-	}
-	// обработчик нажатий
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		tableView.deselectRow(at: indexPath, animated: true)
+	func parsing(_ distJson: JSON?){
+		guard let json = distJson else { print("empty Json"); return }
+		var parsingData: [Category] = []
+		let categorys = json.arrayValue
+		for category in categorys{
+			
+			let id = category["id"].intValue
+			let title = category["title"].stringValue
+			var todos: [Todo] = []
+			for todo in category["todos"].arrayValue{
+				let id = todo["id"].intValue
+				let text = todo["text"].stringValue
+				let projectdId = todo["project_id"].intValue
+				let status = todo["isCompleted"].boolValue
+				todos.append(Todo(id: id, text: text, status: status, projectId: projectdId))
+			}
+			parsingData.append(Category(id: id, title: title, todos: todos))
+		}
+		self.data = parsingData
+		self.tableView.reloadData()
 	}
 	
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "todo", for: indexPath)
-		let label = UILabel(frame: CGRect(x: 45, y:0.0, width: 300, height: 40))
-		label.text = data[indexPath.section].todos![indexPath.row].text
-		let checkbox = M13Checkbox(frame: CGRect(x: 8, y: 8, width: 24, height: 24))
-		checkbox.boxType = M13Checkbox.BoxType.square
-		if data[indexPath.section].todos![indexPath.row].isCompleted {
-			checkbox.setCheckState(.checked, animated: true)
+		guard let myData = data else {
+			print("empty data")
+			let cell = tableView.dequeueReusableCell(withIdentifier: "todo", for: indexPath) as! MyCell
+			return cell
 		}
-		checkbox.secondaryTintColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
-		checkbox.stateChangeAnimation = M13Checkbox.Animation.bounce(.fill)
-		cell.addSubview(label)
-		cell.addSubview(checkbox)
-        return cell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "todo", for: indexPath) as! MyCell
+		cell.delegate = self
 		
+		cell.todoText.text = myData[indexPath.section].todos![indexPath.row].text
+		let checkState = myData[indexPath.section].todos![indexPath.row].isCompleted ? M13Checkbox.CheckState.checked : .unchecked
+		cell.checkBox.setCheckState(checkState, animated: false)
+        return cell
     }
-
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+	
+}
+extension TodosController{
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		guard let title = data?[section].title else { return "nill" }
+		return title
+	}
+	
+	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return 40
+	}
+	override func numberOfSections(in tableView: UITableView) -> Int {
+		guard let myData = data else { return 0 }
+		return myData.count
+	}
+	
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		guard let myData = data else { return 0 }
+		guard let count = myData[section].todos?.count else { return 0 }
+		return count
+	}
+	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		tableView.deselectRow(at: indexPath, animated: true)
+	}
 }

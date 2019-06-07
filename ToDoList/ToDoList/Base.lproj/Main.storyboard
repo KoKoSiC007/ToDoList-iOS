@@ -18,13 +18,43 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="todo" id="Qcg-uQ-lxl">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="todo" id="Qcg-uQ-lxl" customClass="MyCell" customModule="ToDoList" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Qcg-uQ-lxl" id="2eC-6B-XRk">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hgu-tt-tae" customClass="M13Checkbox" customModule="M13Checkbox">
+                                            <rect key="frame" x="8" y="7" width="30" height="30"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="30" id="31B-d6-Sec"/>
+                                                <constraint firstAttribute="height" constant="30" id="KHH-7N-pM9"/>
+                                            </constraints>
+                                            <connections>
+                                                <action selector="buttonTappedWithSender:" destination="Qcg-uQ-lxl" eventType="valueChanged" id="b6L-rS-Yyh"/>
+                                            </connections>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gMh-88-0nz">
+                                            <rect key="frame" x="46" y="12" width="42" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="gMh-88-0nz" firstAttribute="leading" secondItem="hgu-tt-tae" secondAttribute="trailing" constant="8" id="0Cr-Bi-PhP"/>
+                                        <constraint firstItem="hgu-tt-tae" firstAttribute="centerY" secondItem="2eC-6B-XRk" secondAttribute="centerY" id="EeV-TD-ghk"/>
+                                        <constraint firstItem="hgu-tt-tae" firstAttribute="leading" secondItem="2eC-6B-XRk" secondAttribute="leading" constant="8" id="ZTL-G2-RSr"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gMh-88-0nz" secondAttribute="trailing" priority="999" constant="8" id="gYC-6D-zHb"/>
+                                        <constraint firstItem="gMh-88-0nz" firstAttribute="centerY" secondItem="hgu-tt-tae" secondAttribute="centerY" id="p51-cJ-Y0A"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="checkBox" destination="hgu-tt-tae" id="mV4-Vl-54w"/>
+                                    <outlet property="todoText" destination="gMh-88-0nz" id="ase-kZ-fxO"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -44,7 +74,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AjH-r0-slW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2050" y="36"/>
+            <point key="canvasLocation" x="2048.8000000000002" y="35.532233883058474"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="BMr-00-WLI">
@@ -120,7 +150,7 @@
                             <color key="tintColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="cancel:" destination="MsM-KN-2sA" id="MaL-0c-smQ"/>
-                                <segue destination="HQz-zM-bFJ" kind="presentation" identifier="cancel" id="S8F-EY-PeT"/>
+                                <segue destination="lSq-LW-96x" kind="presentation" identifier="cancel" id="2Mv-6E-CSw"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Item" image="done" id="e9y-cl-kzH">
@@ -128,7 +158,7 @@
                             <color key="tintColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="add:" destination="MsM-KN-2sA" id="4kz-ey-a4t"/>
-                                <segue destination="HQz-zM-bFJ" kind="presentation" identifier="create" id="aR4-SN-uKT"/>
+                                <segue destination="lSq-LW-96x" kind="show" identifier="create" id="4KA-CT-7CD"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -166,6 +196,6 @@
         <image name="done" width="59" height="46"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="aR4-SN-uKT"/>
+        <segue reference="4KA-CT-7CD"/>
     </inferredMetricsTieBreakers>
 </document>

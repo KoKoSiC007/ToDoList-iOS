@@ -10,6 +10,7 @@ import UIKit
 
 class AddTodoController: UITableViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
+	// Решил использовать в качестве селектора UIPickerView, а не как сказано в пункте 5, для удобвства.
 	
 	var data:[Category]?
 	
@@ -19,26 +20,18 @@ class AddTodoController: UITableViewController, UIPickerViewDelegate, UIPickerVi
 	@IBOutlet weak var categorys: UIPickerView!
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+
 		if case segue.identifier = "cancel"{
-			let distVC: TodosController = segue.destination as! TodosController
-			distVC.data = data!;
+			let distVC = segue.destination as! UINavigationController
+			let slideVC = distVC.topViewController as! TodosController
+			slideVC.data = data!;
 		}
-		if case segue.identifier = "create"{
-			let distVC: TodosController = segue.destination as! TodosController
-			distVC.data = data!;
-		}
-	}
-	
-	
-	@IBAction func cancel(_ sender: UIBarButtonItem) {
-		performSegue(withIdentifier: "cancel", sender: self)
-	}
-	
-	@IBAction func add(_ sender: UIBarButtonItem) {
-		guard let text = text.text else { return  }
 		
-		data![categorys.selectedRow(inComponent: 0)].todos!.append(Todo(text: text, projectId: data![categorys.selectedRow(inComponent: 0)].id))
-		performSegue(withIdentifier: "create", sender: self)
+		if case segue.identifier = "create"{
+			guard let text = text.text else { return }
+			guard let id = data?[categorys.selectedRow(inComponent: 0)].id else { return }
+			Net.addData(param: ["todo":["text":text,"todo_id": id]])
+		}
 	}
 	
 	override func didReceiveMemoryWarning(){
@@ -50,20 +43,20 @@ class AddTodoController: UITableViewController, UIPickerViewDelegate, UIPickerVi
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		return data!.count
+		guard let count = data?.count else { return 0 }
+		return count
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		return data![row].title
+		guard let title = data?[row].title else { return "nil" }
+		return title
 	}
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return 2
     }
 	
